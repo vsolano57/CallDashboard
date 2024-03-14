@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        h2 {
+            text-align: center;
+            color: #555;
+            margin-top: 0;
+        }
+        .metric {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .metric-item {
+            flex: 1;
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f8f8f8;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .metric-item h2 {
+            margin-top: 0;
+            color: #555;
+        }
+        .incoming-calls {
+            background-color: #e0f7fa;
+            border: 2px solid #00acc1;
+            color: #00acc1;
+        }
+        .outbound-calls {
+            background-color: #c8e6c9;
+            border: 2px solid #4caf50;
+            color: #4caf50;
+        }
+        .missed-calls {
+            background-color: #ffe0b2;
+            border: 2px solid #ff9800;
+            color: #ff9800;
+        }
+        .voicemail-calls {
+            background-color: #e1bee7;
+            border: 2px solid #9c27b0;
+            color: #9c27b0;
+        }
+        .call-volume {
+            background-color: #ffcc80;
+            border: 2px solid #ff5722;
+            color: #ff5722;
+        }
+        .chats {
+            background-color: #fff3e0;
+            border: 2px solid #ffa726;
+            color: #ffa726;
+        }
+        .chart-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        canvas {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dashboard</h1>
+        <h2>Ramadan 2024 - March 11, 2024</h2>
+        <div class="metric">
+            <div class="metric-item incoming-calls">
+                <h2>Incoming Calls</h2>
+                <p>109</p>
+            </div>
+            <div class="metric-item outbound-calls">
+                <h2>Outbound Calls</h2>
+                <p>24</p>
+            </div>
+            <div class="metric-item missed-calls">
+                <h2>Missed Calls</h2>
+                <p>58</p>
+            </div>
+            <div class="metric-item voicemail-calls">
+                <h2>Incoming Calls Gone to Voicemail</h2>
+                <p>12</p>
+            </div>
+            <div class="metric-item call-volume">
+                <h2>Call Volume</h2>
+                <p>172</p>
+            </div>
+            <div class="metric-item chats">
+                <h2>Chats</h2>
+                <p>5</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Daily Call Volume by Disposition</h2>
+        <canvas id="pieChart" width="400" height="400"></canvas>
+    </div>
+
+    <div class="container">
+        <h2>Call Metrics Per Time of Day</h2>
+        <div class="chart-container">
+            <h3>Calls per Time of Day (12:00 am - 11:59 pm)</h3>
+            <canvas id="callsPerTimeOfDay"></canvas>
+        </div>
+        <div class="chart-container">
+            <h3>Missed Calls per Time of Day (12:00 am - 11:59 pm)</h3>
+            <canvas id="missedCallsPerTimeOfDay"></canvas>
+        </div>
+        <div class="chart-container">
+            <h3>Voicemails per Time of Day (12:00 am - 11:59 pm)</h3>
+            <canvas id="voicemailCallsPerTimeOfDay"></canvas>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Team Summary Overview</h2>
+        <div style="max-width: 800px; margin: 0 auto;">
+            <canvas id="teamSummaryChart"></canvas>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Emails Summary Overview</h2>
+        <div style="max-width: 400px; margin: 20px auto;">
+            <canvas id="emailsChart" width="200" height="200"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // Daily Call Volume by Disposition
+        const labels = ['AR FR Call Back Request', 'Asking for Another Dept', 'Asking for Help in Canada', 'Cancellation Request', 'Chase', 'Complaint or Feedback', 'Donations', 'Events Inquiry', 'Information', 'IRC Shop Inquiry', 'Islamic Inquiry', 'Odoo Glitches', 'OSP - Cancellation', 'OSP - Follow-up', 'OSP - General Information', 'OSP - New', 'OSP Biodata or APR Request', 'OSP New Pricing - Agree to Upgrade', 'OSP New Pricing- Cancelling Righ Away', 'OSP New Pricing - Transfer to Orphan Care', 'Payment Method Update', 'Refund Request', 'Renewals', 'Tax Receipt - Follow-up', 'Tax Receipt - General Inquiry', 'Tax Receipt - Request', 'Water Wells Donation', 'Water Wells Information', 'Zakat Inquiries', 'Sales Call', 'Survey Completion'];
+        const data = [0, 2, 0, 0, 0, 0, 9, 0, 7, 3, 0, 0, 2, 9, 0, 4, 0, 0, 0, 0, 6, 0, 0, 8, 4, 17, 0, 1, 2, 1, 3];
+const colors = ['#D8BFD8', '#B0C4DE', '#F5F5DC', '#5F9EA0', '#DCDCDC', '#808080', '#BC8F8F', '#A0522D', '#4682B4', '#C2B280']; // Pastel colors
+
+const ctx = document.getElementById('pieChart').getContext('2d');
+const pieChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+        labels: labels,
+        datasets: [{
+            data: data,
+            backgroundColor: colors,
+            borderColor: '#fff', // Add border color
+            borderWidth: 1 // Add border width
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                text: '',
+                fontSize: 26, // Increase font size
+                fontColor: '#333'
+            },
+            legend: {
+                display: true,
+                position: 'right', // Move legend to the right
+                labels: {
+                    font: {
+                        size: 14 // Adjust font size
+                    }
+                }
+            }
+        },
+        elements: {
+            arc: {
+                borderWidth: 0.5 // add border
+            }
+        },
+        tooltips: {
+            callbacks: {
+                label: function(context) {
+                    const label = context.label || '';
+                    const value = context.parsed || 0;
+                    return label + ': ' + value + '%';
+                }
+            }
+        }
+    }
+});
+
+// Call Metrics Per Time of Day
+const callsData = [0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 3, 7, 6, 13, 13, 11, 3, 6, 8, 15, 11, 9, 6, 15, 16, 4, 4, 3, 3, 3, 1, 0, 2, 3, 3, 0, 1, 0, 0,0];
+const missedCallsData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 3, 6, 6, 5, 0, 0, 1, 4, 4, 0, 2, 8, 5, 2, 1, 0, 1, 1, 1, 0, 0, 0, 2, 0, 1, 0, 0,0];
+const voicemailCallsData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 2, 1, 0, 0, 0, 0, 0, 1, 0, 0, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,0];
+const halfHourLabels = Array.from({length: 48}, (_, i) => {
+    const hour = Math.floor(i / 2);
+    const minute = i % 2 === 0 ? '00' : '30';
+    return `${hour.toString().padStart(2, '0')}:${minute} ${hour < 12 ? 'am' : 'pm'}`;
+});
+
+const ctx1 = document.getElementById('callsPerTimeOfDay').getContext('2d');
+const ctx2 = document.getElementById('missedCallsPerTimeOfDay').getContext('2d');
+const ctx3 = document.getElementById('voicemailCallsPerTimeOfDay').getContext('2d');
+
+const callsChart = new Chart(ctx1, {
+    type: 'line',
+    data: {
+        labels: halfHourLabels,
+        datasets: [{
+            label: 'Calls per Half-Hour',
+            data: callsData,
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 2
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+const missedCallsChart = new Chart(ctx2, {
+    type: 'line',
+    data: {
+        labels: halfHourLabels,
+        datasets: [{
+            label: 'Missed Calls per Half-Hour',
+            data: missedCallsData,
+            backgroundColor: 'rgba(255, 152, 0, 0.2)',
+            borderColor: 'rgba(255, 152, 0, 1)',
+            borderWidth: 2
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+const voicemailCallsChart = new Chart(ctx3, {
+    type: 'line',
+    data: {
+        labels: halfHourLabels,
+        datasets: [{
+            label: 'Voicemail Calls per Half-Hour',
+            data: voicemailCallsData,
+            backgroundColor: 'rgba(156, 39, 176, 0.2)',
+            borderColor: 'rgba(156, 39, 176, 1)',
+            borderWidth: 2
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+// Team Summary Overview
+document.addEventListener("DOMContentLoaded", function() {
+    const agentData = {
+        'Agent 1': {
+            'Inbound Calls': 12,
+            'Outbound Calls': 3
+        },
+        'Agent 2': {
+            'Inbound Calls': 15,
+            'Outbound Calls': 1
+        },
+        'Agent 3': {
+            'Inbound Calls': 15,
+            'Outbound Calls': 3
+        },
+        'Agent 4': {
+            'Inbound Calls': 16,
+            'Outbound Calls': 2
+        },
+        'Agent 5': {
+            'Inbound Calls': 13,
+            'Outbound Calls': 3
+        },
+        'Agent 6': {
+            'Inbound Calls': 15,
+            'Outbound Calls': 0
+        },
+        'Agent 7': {
+            'Inbound Calls': 1,
+            'Outbound Calls': 2
+        }
+    };
+
+    const agentLabels = Object.keys(agentData);
+    const inboundCallsData = Object.values(agentData).map(agent => agent['Inbound Calls']);
+    const outboundCallsData = Object.values(agentData).map(agent => agent['Outbound Calls']);
+    const totalCallsData = inboundCallsData.map((inboundCalls, index) => inboundCalls + outboundCallsData[index]);
+
+    const teamSummaryCtx = document.getElementById('teamSummaryChart').getContext('2d');
+
+    const teamSummaryChart = new Chart(teamSummaryCtx, {
+        type: 'bar',
+        data: {
+            labels: agentLabels,
+            datasets: [{
+                label: 'Inbound Calls',
+                backgroundColor: '#B0C4DE',
+                data: inboundCallsData
+            }, {
+                label: 'Outbound Calls',
+                backgroundColor: '#D8BFD8',
+                data: outboundCallsData
+            }, {
+                label: 'Total Calls',
+                backgroundColor: '#F5F5DC',
+                data: totalCallsData
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    stacked: true
+                },
+                y: {
+                    stacked: true
+                }
+            }
+        }
+    });
+});
+
+// Emails Summary Overview
+document.addEventListener("DOMContentLoaded", function() {
+    const emailsReceivedData = 71; // Example data
+    const emailsSentData = 119; // Example data
+
+    const emailsLabels = ['Emails Received', 'Emails Sent'];
+    const emailsCounts = [emailsReceivedData, emailsSentData];
+
+    const emailsCtx = document.getElementById('emailsChart').getContext('2d');
+
+    const emailsChart = new Chart(emailsCtx, {
+        type: 'doughnut',
+        data: {
+            labels: emailsLabels,
+            datasets: [{
+                data: emailsCounts,
+                backgroundColor: ['#D8BFD8', '#B0C4DE']
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+});
+</script>
+</body>
+</html>
