@@ -92,23 +92,23 @@
 <body>
     <div class="container">
         <h1>Dashboard</h1>
-        <h2>Ramadan 2024 - March 20, 2024</h2>
+        <h2>Ramadan 2024 - March 21, 2024</h2>
         <div class="metric">
             <div class="metric-item incoming-calls">
                 <h2>Incoming Calls</h2>
-                <p>86</p>
+                <p>82</p>
             </div>
             <div class="metric-item outbound-calls">
                 <h2>Outbound Calls</h2>
-                <p>24</p>
+                <p>22</p>
             </div>
             <div class="metric-item missed-calls">
                 <h2>Missed Calls</h2>
-                <p>26</p>
+                <p>33</p>
             </div>
             <div class="metric-item voicemail-calls">
                 <h2>Incoming Calls Gone to Voicemail</h2>
-                <p>8</p>
+                <p>7</p>
             </div>
             <div class="metric-item call-volume">
                 <h2>Call Volume</h2>
@@ -116,7 +116,7 @@
             </div>
             <div class="metric-item chats">
                 <h2>Chats</h2>
-                <p>10</p>
+                <p>9</p>
             </div>
         </div>
     </div>
@@ -159,7 +159,7 @@
     <script>
         // Daily Call Volume by Disposition
         const labels = ['AR FR Call Back Request', 'Asking for Another Dept', 'Asking for Help in Canada', 'Cancellation Request', 'Chase', 'Complaint or Feedback', 'Donations', 'Events Inquiry', 'Information', 'IRC Shop Inquiry', 'Islamic Inquiry', 'Odoo Glitches', 'OSP - Cancellation', 'OSP - Follow-up', 'OSP - General Information', 'OSP - New', 'OSP Biodata or APR Request', 'OSP New Pricing - Agree to Upgrade', 'OSP New Pricing- Cancelling Righ Away', 'OSP New Pricing - Transfer to Orphan Care', 'Payment Method Update', 'Refund Request', 'Renewals', 'Tax Receipt - Follow-up', 'Tax Receipt - General Inquiry', 'Tax Receipt - Request', 'Water Wells Donation', 'Water Wells Information', 'Zakat Inquiries', 'Sales Call', 'Survey Completion'];
-        const data = [0, 4, 0, 2, 10, 0, 19, 2, 17, 1, 0, 1, 1, 11, 1, 0, 0, 0, 1, 0, 14, 2, 0, 10, 0, 11, 0, 0, 2, 0, 3];
+        const data = [0, 6, 3, 3, 5, 0, 11, 1, 21, 1, 0, 0, 3, 7, 1, 2, 0, 0, 1, 0, 9, 1, 1, 9, 5, 10, 0, 0, 5, 0, 2];
 const colors = ['#D8BFD8', '#B0C4DE', '#F5F5DC', '#5F9EA0', '#DCDCDC', '#808080', '#BC8F8F', '#A0522D', '#4682B4', '#C2B280']; // Pastel colors
 
 const ctx = document.getElementById('pieChart').getContext('2d');
@@ -211,9 +211,9 @@ const pieChart = new Chart(ctx, {
 });
 
 // Call Metrics Per Time of Day
-const callsData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 10, 10, 9, 8, 8, 2, 8, 8, 8, 6, 6, 5, 6, 8, 17, 15, 5, 6, 4, 5, 0, 2, 0, 0, 0, 1, 2, 0, 0, 0];
-const missedCallsData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 2, 3, 2, 1, 0, 0, 0, 0, 0, 1, 2, 0, 2, 2, 2, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0];
-const voicemailCallsData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0];
+const callsData = [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 3, 2, 8, 8, 11, 12, 9, 7, 3, 10, 19, 9, 7, 11, 2, 5, 5, 2, 4, 0, 1, 0, 0, 0, 0, 0, 0, 0];
+const missedCallsData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 5, 7, 9, 7, 7, 7, 3, 10, 15, 7, 5, 7, 0, 4, 5, 0, 3, 0, 1, 0, 0, 0, 0, 0, 0, 0];
+const voicemailCallsData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 2, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 const halfHourLabels = Array.from({length: 48}, (_, i) => {
     const hour = Math.floor(i / 2);
     const minute = i % 2 === 0 ? '00' : '30';
@@ -291,32 +291,32 @@ const voicemailCallsChart = new Chart(ctx3, {
 document.addEventListener("DOMContentLoaded", function() {
     const agentData = {
         'Agent 1': {
-            'Inbound Calls': 13,
-            'Outbound Calls': 5                
+            'Inbound Calls': 16,
+            'Outbound Calls': 6                
         },
         'Agent 2': {
-            'Inbound Calls': 11,
-            'Outbound Calls': 2
+            'Inbound Calls': 14,
+            'Outbound Calls': 0
         },
         'Agent 3': {
-            'Inbound Calls': 21,
-            'Outbound Calls': 2
-        },
-        'Agent 4': {
-            'Inbound Calls': 14,
-            'Outbound Calls': 2
-        },
-        'Agent 5': {
-            'Inbound Calls': 21,
+            'Inbound Calls': 12,
             'Outbound Calls': 1
         },
-        'Agent 6': {
-            'Inbound Calls': 10,
+        'Agent 4': {
+            'Inbound Calls': 13,
+            'Outbound Calls': 8
+        },
+        'Agent 5': {
+            'Inbound Calls': 15,
             'Outbound Calls': 0
+        },
+        'Agent 6': {
+            'Inbound Calls': 12,
+            'Outbound Calls': 3
         },
         'Agent 7': {
             'Inbound Calls': 0,
-            'Outbound Calls': 10
+            'Outbound Calls': 4
         },
         'Agent 8': {
             'Inbound Calls': 0,
@@ -364,8 +364,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // Emails Summary Overview
 document.addEventListener("DOMContentLoaded", function() {
-    const emailsReceivedData = 130; // Example data
-    const emailsSentData = 104; // Example data
+    const emailsReceivedData = 142; // Example data
+    const emailsSentData = 118; // Example data
 
     const emailsLabels = ['Emails Received', 'Emails Sent'];
     const emailsCounts = [emailsReceivedData, emailsSentData];
